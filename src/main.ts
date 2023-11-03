@@ -23,7 +23,7 @@ export class App {
 
   handleClick() {
     window.open(
-      'https://xmsg-child.vercel.app',
+      'https://sub-750.pages.dev',
       'xmsg-child',
       'height=800,width=800'
     );
