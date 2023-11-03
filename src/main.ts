@@ -24,7 +24,11 @@ export class App {
   );
 
   handleClick() {
-    postMessage('https://jsonplaceholder.typicode.com/todos/1', '*');
+    window.open(
+      'https://xmsg-child.vercel.app',
+      'xmsg-child',
+      'height=800,width=800'
+    );
   }
 }
 
