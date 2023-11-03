@@ -4,8 +4,6 @@ import { CommonModule } from '@angular/common';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { fromEvent, map } from 'rxjs';
 
-// https://gist.github.com/tuan/8a1ca1b0376a5056f4141972b171c89e
-
 @Component({
   selector: 'app-root',
   standalone: true,
