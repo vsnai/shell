@@ -1,32 +1,46 @@
-import 'zone.js/dist/zone';
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { fromEvent, map } from 'rxjs';
+import { delay, filter, fromEvent, map, tap } from 'rxjs';
+import 'zone.js/dist/zone';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HttpClientModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div>a</div>
-    <div *ngIf="url$ | async as url">{{ url }}</div>
+    <div *ngIf="url$ | async as url">{{ url | json }}</div>
     <div>c</div>
-
-    <button (click)="handleClick()">Post Message</button>
   `,
 })
 export class App {
+  popup: Window | null = null;
+
   url$ = fromEvent<MessageEvent>(window, 'message').pipe(
-    map(({ data }) => data)
+    filter(({ data }) => !data.type),
+    map(({ data }) => ({ data })),
+    tap(() => this.popup?.close())
   );
 
-  handleClick() {
-    window.open(
-      'https://sub-750.pages.dev',
-      'xmsg-child',
-      'height=800,width=800'
-    );
+  constructor(private _http: HttpClient) {
+    this._http
+      .get('https://jsonplaceholder.typicode.com/users/1')
+      .pipe(
+        takeUntilDestroyed(),
+        delay(2000),
+        tap(() => {
+          this.popup = window.open(
+            'https://sub-750.pages.dev',
+            'xmsg-child',
+            'width=640,height=320'
+          );
+        })
+      )
+      .subscribe(console.log);
   }
 }
 
